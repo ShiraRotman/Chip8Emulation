@@ -11,22 +11,52 @@
 		<script src="./chipsystem.js"></script>
 		
 		<script type="text/javascript">
-			const programData=
-				"00E0CD7FCE7F8CD08CE4A2A26A006B00" +
-				"FD33F2652276A2887A07DAB5A2A27A08" +
-				"FE33F2652276A28E7A07DAB4A2926A18" +
-				"6B08DABFF00AF10AF20ADABF6A152276" +
-				"A2A5F255A2A2FC33F565830533001262" +
-				"841534001262852535001262660CF618" +
-				"126A6A156B102276660E6A266B08F629" +
-				"DAB5F00A1200F029DAB57A05F129DAB5" +
-				"7A05F229DAB500EE2020F820200000FF" +
-				"00FFFFFF030303FFFFC0C0C0C0C000C0" +
-				"C000000000000000";
-		
-			const chip8System=new Chip8System(new KeyboardDevice(),new MatrixDisplay(),
-					new SoundDevice());
-			chip8System.loadProgram(programData);
+			window.onload=function()
+			{
+				const programData=
+					"00E0CD7FCE7F8CD08CE4A2A26A006B00" +
+					"FD33F2652276A2887A07DAB5A2A27A08" +
+					"FE33F2652276A28E7A07DAB4A2926A18" +
+					"6B08DABFF00AF10AF20ADABF6A152276" +
+					"A2A5F255A2A2FC33F565830533001262" +
+					"841534001262852535001262660CF618" +
+					"126A6A156B102276660E6A266B08F629" +
+					"DAB5F00A1200F029DAB57A05F129DAB5" +
+					"7A05F229DAB500EE2020F820200000FF" +
+					"00FFFFFF030303FFFFC0C0C0C0C000C0" +
+					"C000000000000000";
+				
+				const stdKeyboardDevice=new KeyboardDevice();
+				stdKeyboardDevice.keymapping=
+				{
+					"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7,
+					"8": 8, "9": 9, ".": 10, ",": 10, "/": 11, "*": 12, "-": 13,
+					"+": 14, "Enter": 15, "End": 1, "ArrowDown": 2, "PageDown": 3,
+					"ArrowLeft": 4, "ArrowRight": 6, "Home": 7, "ArrowUp": 8, 
+					"PageUp": 9, "Decimal": 10, "Divide": 11, "Multiply": 12,
+					"Subtract": 13, "Add": 14
+				};			 
+				
+				document.addEventListener("keydown",function(event) 
+				{ handleKeyEvent(event,true); });
+				
+				document.addEventListener("keyup",function(event)
+				{ handleKeyEvent(event,false); });
+				
+				function handleKeyEvent(event,isdown)
+				{
+					if (event.key in stdKeyboardDevice.keymapping)
+					{
+						const keynum=stdKeyboardDevice.keymapping[event.key];
+						const keyEvent=KeyboardDevice.createKeyEvent(keynum,isdown);
+						stdKeyboardDevice.dispatchEvent(keyEvent);
+					}
+				}
+				
+				const chip8System=new Chip8System(stdKeyboardDevice,new MatrixDisplay(),
+						new SoundDevice());
+				chip8System.loadProgram(programData);
+			}; //end onload
 		</script>
 	</body>
 </html>
