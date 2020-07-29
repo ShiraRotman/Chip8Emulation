@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<title>CHIP-8 Emulator</title>
+	</head>
+	<body>
+		<script src="./misc.js"></script>
+		<script src="./devices.js"></script>
+		<script src="./chipsystem.js"></script>
+		
+		<script type="text/javascript">
+			const programData=
+				"00E0CD7FCE7F8CD08CE4A2A26A006B00" +
+				"FD33F2652276A2887A07DAB5A2A27A08" +
+				"FE33F2652276A28E7A07DAB4A2926A18" +
+				"6B08DABFF00AF10AF20ADABF6A152276" +
+				"A2A5F255A2A2FC33F565830533001262" +
+				"841534001262852535001262660CF618" +
+				"126A6A156B102276660E6A266B08F629" +
+				"DAB5F00A1200F029DAB57A05F129DAB5" +
+				"7A05F229DAB500EE2020F820200000FF" +
+				"00FFFFFF030303FFFFC0C0C0C0C000C0" +
+				"C000000000000000";
+		
+			const chip8System=new Chip8System(new KeyboardDevice(),new MatrixDisplay(),
+					new SoundDevice());
+			chip8System.loadProgram(programData);
+		</script>
+	</body>
+</html>
