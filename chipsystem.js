@@ -199,6 +199,7 @@ const Chip8System=(function()
 		}
 		if ((keynum<0)||(keynum>15))
 			throw new RangeError("The 'keynum' property must be a number between 0 and 15!");
+		return keynum;
 	}
 	
 	function handleCPUCycle()
@@ -209,8 +210,8 @@ const Chip8System=(function()
 		const instruction=new Uint8Array([privateProps.memory[programCounter],
 				privateProps.memory[programCounter+1]]);
 		
-		//Handle specific opcodes
 		console.log(`Now processing: ${instruction[0].toString(16)}${instruction[1].toString(16)}`);
+		//Handle specific opcodes
 		if (instruction[0]==0x00)
 		{
 			if (instruction[1]==0xE0) privateProps.displayDevice.clear();
@@ -311,13 +312,10 @@ const Chip8System=(function()
 						var indicator=(regValue1>0xFF?1:0);
 						if (regValue1>0xFF) regValue1&=0xFF;
 						break;
-					case 0x6:
-						indicator=regValue2%2;
-						regValue1>>>=regValue2;
-						break;
+					case 0x6: indicator=regValue2%2; regValue1=regValue2>>>1; break;
 					case 0xE:
 						indicator=(regValue2>0x7F?1:0);
-						regValue1<<=regValue2; regValue1&=0xFF;
+						regValue1=regValue2<<1; regValue1&=0xFF;
 						break;
 					case 0x5:
 						indicator=(regValue1>regValue2?1:0);
@@ -360,7 +358,7 @@ const Chip8System=(function()
 						if ((privateProps.byteRegisters[SOUND_TIMER_INDEX]>0)&&(privateProps.soundIntervalID==0))
 						{
 							privateProps.soundIntervalID=setInterval(privateProps.
-									soundClockTicked,DELAY_INTERVAL_MILLIS);
+									soundClockTicked,SOUND_INTERVAL_MILLIS);
 						}
 						break;
 					case 0x29:
@@ -410,8 +408,8 @@ const Chip8System=(function()
 					{
 						if ((spriteRow & bitmask)!=0)
 						{
-							collided|=privateProps.displayDevice.lightPixel(
-									regValue1,regValue2);
+							collided|=privateProps.displayDevice.
+									lightPixel(regValue1,regValue2);
 						}
 						regValue1++; bitmask>>>=1;
 						if (regValue1==CHIP8_DISPLAY_WIDTH) regValue1=0;
