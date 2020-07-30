@@ -33,3 +33,9 @@ EventTarget.prototype.dispatchEvent = function(event) {
   }
   return !event.defaultPrevented;
 };
+
+function isEventTarget(observable)
+{
+	return (("addEventListener" in observable)&&("removeEventListener" in observable)&&
+			("dispatchEvent" in observable));
+}

@@ -1,5 +1,5 @@
 
-const CHIP8_DISPLAY_WIDTH=64,CHIP8_DISPLAY_HEIGHT=32;
+const CHIP8_DISPLAY_WIDTH=64,CHIP8_DISPLAY_HEIGHT=32,CHIP8_NUM_KEYS=16;
 
 const Chip8System=(function()
 {
@@ -210,7 +210,7 @@ const Chip8System=(function()
 		const instruction=new Uint8Array([privateProps.memory[programCounter],
 				privateProps.memory[programCounter+1]]);
 		
-		console.log(`Now processing: ${instruction[0].toString(16)}${instruction[1].toString(16)}`);
+		//console.log(`Now processing: ${instruction[0].toString(16)}${instruction[1].toString(16)}`);
 		//Handle specific opcodes
 		if (instruction[0]==0x00)
 		{

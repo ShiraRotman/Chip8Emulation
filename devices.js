@@ -17,9 +17,9 @@ KeyboardDevice.createKeyEvent=function(keynum,isdown)
 	if (typeof(isdown)!=="boolean")
 		throw new TypeError("'isdown' must be a boolean!");
 	if (typeof(keynum)!=="number")
-		throw new TypeError("'keynum' must be a number between 0 and 15!");
-	if ((keynum<0)||(keynum>15))
-		throw new RangeError("'keynum' must be a number between 0 and 15!");
+		throw new TypeError(`'keynum' must be a number between 0 and ${CHIP8_NUM_KEYS}!`);
+	if ((keynum<0)||(keynum>CHIP8_NUM_KEYS))
+		throw new RangeError(`'keynum' must be a number between 0 and ${CHIP8_NUM_KEYS}!`);
 	
 	return new CustomEvent(isdown?"keydown":"keyup",{detail: {keynum: keynum}});
 }
