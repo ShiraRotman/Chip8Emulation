@@ -6,11 +6,20 @@
 		<title>CHIP-8 Emulator</title>
 	</head>
 	<body>
+		<div style="width: 100%; display: flex; justify-content: center">
+			<canvas id="displayCanvas" width="256" height="128" style="background-color: black;">
+				Emulated Display
+			</canvas>
+		</div>
+	
 		<script src="./misc.js"></script>
 		<script src="./devices.js"></script>
+		<script src="./iocomm.js"></script>
 		<script src="./chipsystem.js"></script>
 		
 		<script type="text/javascript">
+			let chip8System=null,canvasUpdater=null;
+		
 			window.onload=function()
 			{
 				const programData=
@@ -53,7 +62,10 @@
 					}
 				}
 				
-				const chip8System=new Chip8System(stdKeyboardDevice,new MatrixDisplay(),
+				const canvas=document.getElementById("displayCanvas");
+				const displayObservable=new MatrixDisplay();
+				canvasUpdater=new CanvasUpdater(canvas,displayObservable,"darkgreen");
+				chip8System=new Chip8System(stdKeyboardDevice,displayObservable,
 						new SoundDevice());
 				chip8System.loadProgram(programData);
 			}; //end onload

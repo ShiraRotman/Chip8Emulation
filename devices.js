@@ -74,48 +74,63 @@ const DisplayDevice=(function()
 	return DisplayDevice;
 })();
 
+const DRAW_EVENT_TYPE="draw",CLEAR_EVENT_TYPE="clear";
+
 const MatrixDisplay=(function()
 {
-	const matricesMap=new WeakMap();
+	const privatePropsMap=new WeakMap();
 	
 	function MatrixDisplay()
 	{
-		DisplayDevice.call(this);
+		DisplayDevice.call(this); EventTarget.call(this);
 		const matrix=new Array(CHIP8_DISPLAY_HEIGHT);
 		for (let index=0;index<matrix.length;index++)
+		{
 			matrix[index]=new Array(CHIP8_DISPLAY_WIDTH);
-		matricesMap.set(this,matrix);
-		this.clear();
+			matrix[index].fill(false);
+		}
+		privatePropsMap.set(this,{matrix: matrix});
 	}
 	
-	Object.assign(MatrixDisplay.prototype,EventTarget.prototype);
 	MatrixDisplay.prototype=Object.create(DisplayDevice.prototype);
 	MatrixDisplay.prototype.constructor=MatrixDisplay;
+	Object.assign(MatrixDisplay.prototype,EventTarget.prototype);
 	
 	MatrixDisplay.prototype.clear=function()
 	{
-		const matrix=matricesMap.get(this);
-		for (let index1=0;index1<matrix.length;index1++)
-			for (let index2=0;index2<matrix[index1].length;index2++)
-				matrix[index1][index2]=false;
+		const privateProps=privatePropsMap.get(this),matrix=privateProps.matrix;
+		for (let index=0;index<matrix.length;index++)
+			matrix[index].fill(false);
+		this.dispatchEvent(new CustomEvent(CLEAR_EVENT_TYPE));
+	}
+	
+	MatrixDisplay.prototype.startDraw=function()
+	{
+		const privateProps=privatePropsMap.get(this);
+		privateProps.litPixels=[]; privateProps.clrPixels=[];
 	}
 	
 	MatrixDisplay.prototype.lightPixel=function(x,y)
 	{
-		DisplayDevice.call(this,x,y);
-		const matrix=matricesMap.get(this); 
-		matrix[y][x]^=true; return !matrix[y][x];
+		//TODO: throw IllegalState
+		DisplayDevice.call(this,x,y); const pixel={x: x, y: y};
+		const privateProps=privatePropsMap.get(this),matrix=privateProps.matrix;
+		const collided=matrix[y][x]; matrix[y][x]=!matrix[y][x];
+		if (collided) privateProps.clrPixels.push(pixel);
+		else privateProps.litPixels.push(pixel);
+		return collided;
 	}
 	
-	MatrixDisplay.print=function() //For debugging
+	MatrixDisplay.prototype.finishDraw=function()
 	{
-		const matrix=matricesMap.get(this);
-		for (let index=0;index<matrix.length;index++)
-			console.log(...matrix[index]);
+		const privateProps=privatePropsMap.get(this);
+		const detail=
+		{
+			litPixels: privateProps.litPixels,
+			clrPixels: privateProps.clrPixels
+		};
+		this.dispatchEvent(new CustomEvent(DRAW_EVENT_TYPE,{detail: detail}));
 	}
-	
-	MatrixDisplay.prototype.finishDraw=function() { }
-	//{ MatrixDisplay.print.call(this); }
 	
 	return MatrixDisplay;
 })();

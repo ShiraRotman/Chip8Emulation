@@ -2,7 +2,6 @@ var EventTarget = function() {
   this.listeners = {};
 };
 
-EventTarget.prototype.listeners = null;
 EventTarget.prototype.addEventListener = function(type, callback) {
   if (!(type in this.listeners)) {
     this.listeners[type] = [];
