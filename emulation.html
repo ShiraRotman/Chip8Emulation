@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<div class="row">
-			<canvas id="displayCanvas" width="256" height="128" style="background-color: black;">
+			<canvas id="displayCanvas" style="background-color: black; width: 25%; height: 25%;">
 				Emulated Display
 			</canvas>
 		</div>
@@ -31,6 +31,8 @@
 			window.onload=function()
 			{
 				const canvas=document.getElementById("displayCanvas");
+				const bounds=canvas.getBoundingClientRect();
+				canvas.width=bounds.width; canvas.height=bounds.height;
 				const displayObservable=new MatrixDisplay();
 				canvasUpdater=new CanvasUpdater(canvas,displayObservable,"darkgreen");
 				chip8System=new Chip8System(new KeyboardMappingDevice(document),
