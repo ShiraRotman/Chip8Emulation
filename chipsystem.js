@@ -217,6 +217,7 @@ const Chip8System=(function()
 			if (instruction[1]==0xE0) privateProps.displayDevice.clear();
 			else if (instruction[1]==0xEE)
 				programCounter=privateProps.callstack[--privateProps.byteRegisters[STACK_POINTER_INDEX]];
+			else if (instruction[1]==0x00) { } //NOP
 			else handleInvalidOpcode(instruction);
 		}
 		//Extract the highest digit to get the instruction's category
@@ -398,6 +399,8 @@ const Chip8System=(function()
 				regValue1=privateProps.byteRegisters[regIndex1];
 				regValue2=privateProps.byteRegisters[regIndex2];
 				address=privateProps.wordRegisters[ADDRESS_REG_INDEX];
+				if (regValue1>=CHIP8_DISPLAY_WIDTH) regValue1%=CHIP8_DISPLAY_WIDTH;
+				if (regValue2>=CHIP8_DISPLAY_HEIGHT) regValue2%=CHIP8_DISPLAY_HEIGHT;
 				
 				privateProps.displayDevice.startDraw(); let collided=false;
 				for (let size=instruction[1]%16;size>0;size--)
