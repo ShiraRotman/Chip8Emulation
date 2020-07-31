@@ -3,13 +3,21 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<link rel="stylesheet" href="./styles.css">
 		<title>CHIP-8 Emulator</title>
 	</head>
 	<body>
-		<div style="width: 100%; display: flex; justify-content: center">
+		<div class="row">
 			<canvas id="displayCanvas" width="256" height="128" style="background-color: black;">
 				Emulated Display
 			</canvas>
+		</div>
+		<div class="row" style="margin-top: 0.5rem; flex-wrap: wrap;">
+			<label for="fileSelector">Choose a chip-8 file</label>
+			<input id="fileSelector" type="file" accept=".ch8" style="width: 0; height: 0;"/>
+			<label id="fileName" style="margin-left: 0.25rem; color: black;">
+				No file selected
+			</label>
 		</div>
 	
 		<script src="./misc.js"></script>
@@ -22,104 +30,33 @@
 		
 			window.onload=function()
 			{
-				const programData=[];
-				programData[0]=				
-					"00E0CD7FCE7F8CD08CE4A2A26A006B00" +
-					"FD33F2652276A2887A07DAB5A2A27A08" +
-					"FE33F2652276A28E7A07DAB4A2926A18" +
-					"6B08DABFF00AF10AF20ADABF6A152276" +
-					"A2A5F255A2A2FC33F565830533001262" +
-					"841534001262852535001262660CF618" +
-					"126A6A156B102276660E6A266B08F629" +
-					"DAB5F00A1200F029DAB57A05F129DAB5" +
-					"7A05F229DAB500EE2020F820200000FF" +
-					"00FFFFFF030303FFFFC0C0C0C0C000C0" +
-					"C000000000000000";
-					
-				programData[1]=
-					"6D0A6E02680E690BA5B52482682C2484" +
-					"681D691824846B006C23245824C06821" +
-					"6900A4D8FB1ED894FE187B044B1C6B04" +
-					"7CFF24C03C00121A00E0F918245824C0" +
-					"6A006B0AA600FA1EF765620C7401FB29" +
-					"D2456213F329D2456217A6A0D2457A08" +
-					"7B013A28124468206902A5E224806226" +
-					"6308D237A5FDFD33F265632C64094000" +
-					"1288F029D345128C41001292F1296331" +
-					"D345F2296336D345A680682469112484" +
-					"6836A6A5D8956F0AFF15244A301012B8" +
-					"FF073F0012AA12A4FE188C006A098AC5" +
-					"4F0112A44C0F12A4D8954F0012C8FC29" +
-					"D89524A0A5F6632C6417D34763366418" +
-					"A6A5D3456F0AFF15244A301012F6FF07" +
-					"3F0012E812E2FE188B008AD08AB54F00" +
-					"12E24B0012E26A098AB54F0012E2D345" +
-					"4F00130EFB29D345249400E024C024A0" +
-					"A4D660386100D011710131201326601E" +
-					"610F6A03FA29D015FE1824947AFFD015" +
-					"3A0013346A00A600FA1EF665A600FA1E" +
-					"70FF4000135AF0551372C00170029150" +
-					"816571067201F255A500F11ED2464238" +
-					"13807A084A18FE183A281346FE181344" +
-					"F21868066908A5E2248487A687768776" +
-					"770A97C013C0A694248424B2FB298DB5" +
-					"D8953D0013EE2490D89524B2A5256808" +
-					"6903D8956F102496D89589F313B200EE" +
-					"A68A248424B2A600FA1EF665670087B4" +
-					"73FF330013CEA5FDF733F265410013E4" +
-					"F1292486F229D8958D744F01140CA600" +
-					"FA1EF665A500F11ED2456F18FF15FF07" +
-					"244A301012383F0013FE13F8249000E0" +
-					"640E62006140A5E2680669082484A68A" +
-					"2484A600F11ED2487201324014367409" +
-					"34201412140E7108417861486D078D22" +
-					"4D0014166F04249614226000E0A100EE" +
-					"7001401000EE144CA600610066042466" +
-					"246624662466C0017001C203872E6306" +
-					"8375C70183748304F3557124F61E00EE" +
-					"248624862486D8956F05FF1E780800EE" +
-					"249224946F3CFF18FF073F00149800EE" +
-					"A69E680089CE899E899E89C579BBD892" +
-					"00EEA5F668086910D8976810691100EE" +
-					"6A00A600FA1EF465A500F11ED2467A08" +
-					"3A2814C200EE0101817E18009942DB00" +
-					"00008181000000C33C66184242C34200" +
-					"E7E7000000EE8E8A8A8AEEEE88EC28EE" +
-					"0302020E0A0A050606121E0505060612" +
-					"1E28050606121E10050606121E020506" +
-					"06121E05003F3F3D2524004141476E0A" +
-					"004141476D90004141476F0000414147" +
-					"6E12004141476D900003060E14260005" +
-					"0A222040030002683618060F1A164803" +
-					"00050A420C0000050A420000000B1E3E" +
-					"2222001D22426605001D22426680001D" +
-					"22426610001D22426608001D22426601" +
-					"0002131E12120217382E062404242F3A" +
-					"56110006352236280006352236000217" +
-					"382E062801E9ADEBA9A9515B55515174" +
-					"54745457F795F7A5957744464477EFA8" +
-					"AEE2BEF39293929F1715171111771517" +
-					"15172B2A121213A8A8A8A8B8AEAAEEAA" +
-					"AAAEA8AEA84E2078A07028F020000100" +
-					"02000302001E18000124030106421200" +
-					"014800080D66180002680303138A1800" +
-					"019003011AAE18000108380600181801" +
-					"01043100051818017F481C1C0B4C1800" +
-					"0302020E5E042654050606D2A24CE6C1" +
-					"0506C6D2E2CCB89005860652224C5E60" +
-					"050686D2A28CC6C105068692228C9830" +
-					"00060612620C3E1000EE631A24C000EE" +
-					"F090F790907840704078ABA9A9A953A2" +
-					"322A26A28E8A8A8AEEEE88EC28EE00C0" +
-					"184808481CE020600040";
-				
 				const canvas=document.getElementById("displayCanvas");
 				const displayObservable=new MatrixDisplay();
 				canvasUpdater=new CanvasUpdater(canvas,displayObservable,"darkgreen");
 				chip8System=new Chip8System(new KeyboardMappingDevice(document),
 						displayObservable,new SoundDevice());
-				chip8System.loadProgram(programData[1]);
-			}; //end onload
+						
+				document.getElementById("fileSelector").addEventListener("change",function()
+				{
+					if (this.files[0])
+					{
+						this.files[0].arrayBuffer().then(buffer=>
+						{
+							const fileName=document.getElementById("fileName");
+							fileName.innerText=this.files[0].name;
+							fileName.style.color="black";
+							displayObservable.clear();
+							chip8System.loadProgram(buffer);
+						})
+						.catch(function(error)
+						{
+							const fileName=document.getElementById("fileName");
+							fileName.innerText=`Couldn't read file: ${error.message}`;
+							fileName.style.color="red";
+						});
+					}
+				});
+			};
 		</script>
 	</body>
 </html>
