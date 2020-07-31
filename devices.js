@@ -113,9 +113,10 @@ const MatrixDisplay=(function()
 	MatrixDisplay.prototype.lightPixel=function(x,y)
 	{
 		//TODO: throw IllegalState
-		DisplayDevice.call(this,x,y); const pixel={x: x, y: y};
+		DisplayDevice.prototype.lightPixel.call(this,x,y);
 		const privateProps=privatePropsMap.get(this),matrix=privateProps.matrix;
 		const collided=matrix[y][x]; matrix[y][x]=!matrix[y][x];
+		const pixel={x: x, y: y};
 		if (collided) privateProps.clrPixels.push(pixel);
 		else privateProps.litPixels.push(pixel);
 		return collided;
